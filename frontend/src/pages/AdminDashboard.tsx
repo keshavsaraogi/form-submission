@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/api.ts";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
-import { useToast } from "@/hooks/use-toast.tsx";
+import { useToast } from "@/hooks/use-toast.ts";
 import { Loader2 } from "lucide-react";
 
 interface User {
