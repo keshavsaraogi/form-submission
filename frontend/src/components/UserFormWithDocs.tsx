@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import api from '@/lib/api'; // ✅ use configured api
+import { Input } from '@/components/ui/input.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { useToast } from '@/hooks/use-toast.ts';
+import api from '@/lib/api.ts';
 
 const UserFormWithDocs = () => {
   const [formData, setFormData] = useState({

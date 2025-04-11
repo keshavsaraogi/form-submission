@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import api from '@/lib/api';
+import api from '@/lib/api.ts';
 import { Loader2 } from 'lucide-react';
 
 const PrivateRoute = () => {

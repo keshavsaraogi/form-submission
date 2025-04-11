@@ -24,10 +24,9 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
-      "@/*": [
-        "*"
-      ]
-    }
+      "@/*": ["*"]
+    },
+    "allowImportingTsExtensions": true,
   },
   "include": [
     "src"

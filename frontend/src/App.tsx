@@ -1,10 +1,10 @@
 // src/App.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
-import UserFormWithDocs from "@/components/UserFormWithDocs";
-import AdminLogin from "../src/pages/AdminLogin";
-import AdminDashboard from "../src/pages/AdminDashboard";
-import { Toaster } from "@/components/ui/toaster";
-import PrivateRoute from "@/components/PrivateRoute";
+import UserFormWithDocs from "@/components/UserFormWithDocs.tsx";
+import AdminLogin from "../src/pages/AdminLogin.tsx";
+import AdminDashboard from "../src/pages/AdminDashboard.tsx";
+import { Toaster } from "@/components/ui/toaster.tsx";
+import PrivateRoute from "@/components/PrivateRoute.tsx";
 
 function App() {
   return (
