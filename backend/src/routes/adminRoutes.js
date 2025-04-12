@@ -66,7 +66,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
 // LOGOUT
 router.post('/logout', (req, res) => {
     req.session.destroy(err => {
@@ -110,6 +109,14 @@ router.get("/admin/users", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Server Error" });
+    }
+});
+
+router.get('/check-auth', (req, res) => {
+    if (req.session && req.session.admin) {
+        return res.status(200).json({ isAuthenticated: true });
+    } else {
+        return res.status(401).json({ isAuthenticated: false });
     }
 });
 
