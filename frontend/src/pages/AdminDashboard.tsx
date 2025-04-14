@@ -118,6 +118,10 @@ const AdminDashboard = () => {
     const handleLogout = async () => {
         const success = await logoutAdmin();
         if (success) {
+            toast({
+                title: "Logout Successful", 
+                description: "You have been logged out."
+            })
             navigate('/admin-login')
         } else {
             toast({
