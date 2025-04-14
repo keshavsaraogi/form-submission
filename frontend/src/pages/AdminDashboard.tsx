@@ -149,31 +149,34 @@ const AdminDashboard = () => {
 
     return (
         <div className="p-8 space-y-6">
-            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                <div className="flex flex-col items-center justify-center min-h-screen">
-                    <h1 className="text-2xl font-bold mb-8">Welcome, Admin!</h1>
-                    <button
-                        onClick={handleLogout}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded"
-                    >
-                        Logout
-                    </button>
+            <div className="flex flex-col gap-6">
+                {/* Top Bar */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <h1 className="text-2xl font-bold">Welcome, Admin!</h1>
+                        <Button
+                            onClick={handleLogout}
+                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                        >
+                            Logout
+                        </Button>
+                    </div>
+                    <h2 className="text-3xl font-bold">Admin Dashboard</h2>
                 </div>
-                <h1 className="text-3xl font-bold">Admin Dashboard</h1>
 
-                {/* 🆕 Search and Sort */}
-                <div className="flex gap-4">
+                {/* Search + Sort */}
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
                     <input
                         type="text"
                         placeholder="Search by name, firm, or GST"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="px-3 py-2 border rounded-md"
+                        className="px-4 py-2 border rounded-md flex-1"
                     />
                     <select
                         value={sortOrder}
                         onChange={(e) => setSortOrder(e.target.value as any)}
-                        className="px-3 py-2 border rounded-md"
+                        className="px-4 py-2 border rounded-md"
                     >
                         <option value="desc">Newest</option>
                         <option value="asc">Oldest</option>

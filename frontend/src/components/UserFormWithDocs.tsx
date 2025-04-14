@@ -155,7 +155,7 @@ const UserFormWithDocs = () => {
                 </div>
 
                 <div className="flex flex-col space-y-2">
-                    <label className="font-semibold">Sales Rep Number</label>
+                    <label className="font-semibold">Sales Representative Name</label>
                     <Input
                     type="text"
                     value={formData.salesRepNumber}
