@@ -120,6 +120,21 @@ router.get('/check-auth', (req, res) => {
     }
 });
 
+router.post('/logout', (req, res) =>{
+    req.session.destroy((err) => {
+        if (err) {
+            console.log("Error Destroying Session:", err);
+            return res.status(500).json({message: "Logout Failed"})
+        }
+        res.clearCookie('connect.sid', {
+            secure: true,
+            sameSite: 'None',
+            httpOnly: true
+        })
+        return res.status(200).json({message: "Logout Successful" })
+    })
+}) 
+
 // MIDDLEWARE
 export function isAdminAuthenticated(req, res, next) {
     if (req.session && req.session.isAdmin) {

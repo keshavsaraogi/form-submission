@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
 import api from "@/lib/api.ts";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { useToast } from "@/hooks/use-toast.ts";
 import { Loader2 } from "lucide-react";
+import { logoutAdmin } from '@/lib/logoutAdmin.ts'
 
 interface User {
     _id: string;
@@ -35,6 +37,8 @@ const AdminDashboard = () => {
     const usersPerPage = 5;
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    const navigate = useNavigate();
 
     const fetchUsers = async () => {
         try {
@@ -109,6 +113,13 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleLogout = async () => {
+        const success = await logoutAdmin();
+        if (success) {
+            navigate('/admin-login')
+        }
+    }
+
     const filteredUsers = users
         .filter((user) => {
             const query = searchQuery.toLowerCase();
@@ -139,6 +150,15 @@ const AdminDashboard = () => {
     return (
         <div className="p-8 space-y-6">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <div className="flex flex-col items-center justify-center min-h-screen">
+                    <h1 className="text-2xl font-bold mb-8">Welcome, Admin!</h1>
+                    <button
+                        onClick={handleLogout}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded"
+                    >
+                        Logout
+                    </button>
+                </div>
                 <h1 className="text-3xl font-bold">Admin Dashboard</h1>
 
                 {/* 🆕 Search and Sort */}
