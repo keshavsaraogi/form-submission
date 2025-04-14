@@ -152,6 +152,7 @@ const AdminDashboard = () => {
             <div className="flex flex-col gap-6">
                 {/* Top Bar */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <h2 className="text-3xl font-bold">Admin Dashboard</h2>
                     <div className="flex items-center gap-4">
                         <h1 className="text-2xl font-bold">Welcome, Admin!</h1>
                         <Button
@@ -161,7 +162,6 @@ const AdminDashboard = () => {
                             Logout
                         </Button>
                     </div>
-                    <h2 className="text-3xl font-bold">Admin Dashboard</h2>
                 </div>
 
                 {/* Search + Sort */}
