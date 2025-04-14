@@ -89,12 +89,10 @@ const UserFormWithDocs = () => {
 
     try {
       await api.post('/api/users', form);
-
       toast({
         title: 'Form submitted successfully!',
       });
 
-      // ✅ Optionally reset form here if you want
     } catch (err: any) {
       let description = 'Submission failed. Please try again.';
 
@@ -109,7 +107,7 @@ const UserFormWithDocs = () => {
       }
 
       toast({
-        title: 'Error',
+        title: 'Error Submitting Form',
         description,
         variant: 'destructive',
       });

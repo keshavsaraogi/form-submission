@@ -89,11 +89,12 @@ const AdminDashboard = () => {
         try {
             await api.post(`/api/admin/verify-user`, { userId }, { withCredentials: true });
             toast({ title: "User verified successfully!" });
-            fetchUsers(); // Refresh users
+            fetchUsers();
         } catch (error) {
             console.error(error);
             toast({
-                title: "Failed to verify user",
+                title: "Error Verifying User",
+                description: "Failed to verify user. Please try again.",
                 variant: "destructive",
             });
         }
@@ -103,11 +104,12 @@ const AdminDashboard = () => {
         try {
             await api.delete(`/api/admin/delete-user/${userId}`, { withCredentials: true });
             toast({ title: "User deleted successfully!" });
-            fetchUsers(); // Refresh users
+            fetchUsers();
         } catch (error) {
             console.error(error);
             toast({
                 title: "Failed to delete user",
+                description: "Failed to delete user. Please try again",
                 variant: "destructive",
             });
         }
@@ -117,6 +119,12 @@ const AdminDashboard = () => {
         const success = await logoutAdmin();
         if (success) {
             navigate('/admin-login')
+        } else {
+            toast({
+                title: 'Logout Failed',
+                description: 'Unable to logout. Please try again.',
+                variant: 'destructive'
+            })
         }
     }
 

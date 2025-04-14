@@ -19,7 +19,7 @@ const AdminLogin = () => {
 
         try {
             await api.post('/api/admin/login', { phoneNumber, password });
-            toast({ title: 'Login successful' });
+            toast({ title: 'Login successful', description: 'Welcome Admin!' });
             navigate('/admin');
         } catch (err: any) {
             toast({
