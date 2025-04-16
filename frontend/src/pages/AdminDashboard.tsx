@@ -132,6 +132,31 @@ const AdminDashboard = () => {
         }
     }
 
+    const handleChecklistUpdate = async (
+        userId: string,
+        field: "cheque" | "letterhead",
+        value: boolean
+    ) => {
+        try {
+            await api.patch(`/api/users/${userId}/checklist`, {
+                [field]: value,
+            });
+
+            toast({
+                title: "Checklist Updated",
+                description: `Marked ${field} as ${value ? "checked" : "unchecked"}.`,
+            });
+
+            fetchUsers(); // refresh if needed
+        } catch (err) {
+            toast({
+                title: "Error Updating Checklist",
+                description: "Something went wrong. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
     const filteredUsers = users
         .filter((user) => {
             const query = searchQuery.toLowerCase();
@@ -250,9 +275,27 @@ const AdminDashboard = () => {
                                 {/* Checklist */}
                                 <div className="flex flex-col space-y-1">
                                     <strong>Checklist:</strong>
-                                    <div className="flex gap-2">
-                                        <Badge variant={user.checklist.cheque ? "default" : "outline"}>Cheque</Badge>
-                                        <Badge variant={user.checklist.letterhead ? "default" : "outline"}>Letterhead</Badge>
+                                    <div className="flex items-center gap-4">
+                                        <label className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={user.checklist?.cheque}
+                                                onChange={(e) =>
+                                                    handleChecklistUpdate(user._id, "cheque", e.target.checked)
+                                                }
+                                            />
+                                            Cheque
+                                        </label>
+                                        <label className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={user.checklist?.letterhead}
+                                                onChange={(e) =>
+                                                    handleChecklistUpdate(user._id, "letterhead", e.target.checked)
+                                                }
+                                            />
+                                            Letterhead
+                                        </label>
                                     </div>
                                 </div>
 
