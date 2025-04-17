@@ -37,6 +37,7 @@ const AdminDashboard = () => {
     const usersPerPage = 5;
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [verifyUserId, setVerifyUserId] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
@@ -147,7 +148,7 @@ const AdminDashboard = () => {
                 description: `Marked ${field} as ${value ? "checked" : "unchecked"}.`,
             });
 
-            fetchUsers(); // refresh if needed
+            fetchUsers();
         } catch (err) {
             toast({
                 title: "Error Updating Checklist",
@@ -317,8 +318,17 @@ const AdminDashboard = () => {
                                 {/* Actions (Verify / Delete) */}
                                 <div className="flex gap-3">
                                     {!user.verified && (
-                                        <Button size="sm" variant="default" onClick={() => handleVerify(user._id)}>
-                                            Verify
+                                        <Button
+                                            size="sm"
+                                            variant="default"
+                                            onClick={() => handleVerify(user._id)}
+                                            disabled={verifyUserId === user._id}
+                                        >
+                                            {verifyUserId === user._id ? (
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                            ) : (
+                                                "Verify"
+                                            )}
                                         </Button>
                                     )}
                                     <Button size="sm" variant="destructive" onClick={() => handleDelete(user._id)}>
