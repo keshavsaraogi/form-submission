@@ -90,7 +90,12 @@ const AdminDashboard = () => {
         try {
             await api.patch(`/api/users/${userId}/verify`, {}, { withCredentials: true });
             toast({ title: "User verified successfully!" });
-            fetchUsers();
+            //fetchUsers();
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user._id === userId ? { ...user, verified: true } : user
+                )
+            );
         } catch (error) {
             console.error(error);
             toast({
