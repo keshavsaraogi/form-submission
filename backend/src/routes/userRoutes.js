@@ -170,13 +170,15 @@ router.get('/', async (req, res) => {
 router.patch('/:id/verify', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ error: 'User not found' });
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        user.verified = !user.verified;
+        user.verified = true;
         await user.save();
-        res.json({ success: true, verified: user.verified });
+
+        res.status(200).json({ message: 'User verified successfully' });
     } catch (err) {
-        res.status(500).json({ error: 'Failed to update verification status' });
+        console.error('Error verifying user:', err);
+        res.status(500).json({ message: 'Failed to verify user' });
     }
 });
 
