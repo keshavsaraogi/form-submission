@@ -88,7 +88,7 @@ const AdminDashboard = () => {
 
     const handleVerify = async (userId: string) => {
         try {
-            await api.post(`/api/admin/verify-user`, { userId }, { withCredentials: true });
+            await api.patch(`/api/users/${userId}/verify`, {}, { withCredentials: true });
             toast({ title: "User verified successfully!" });
             fetchUsers();
         } catch (error) {
