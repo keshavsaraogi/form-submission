@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge.tsx";
 import { useToast } from "@/hooks/use-toast.ts";
 import { Loader2 } from "lucide-react";
 import { logoutAdmin } from '@/lib/logoutAdmin.ts'
+import { CSVLink } from "react-csv";
 
 interface User {
     _id: string;
@@ -38,6 +39,26 @@ const AdminDashboard = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [verifyUserId, setVerifyUserId] = useState<string | null>(null);
+
+    const csvHeaders = [
+        { label: "Full Name", key: "fullName" },
+        { label: "Firm Name", key: "firmName" },
+        { label: "GST Number", key: "gstNumber" },
+        { label: "Sales Rep Number", key: "salesRepNumber" },
+        { label: "Contact Number", key: "contactNumber" },
+        { label: "Verified", key: "verified" },
+        { label: "Submitted At", key: "createdAt" }
+    ];
+
+    const validSubmissions = users.map((user) => ({
+        fullName: user.fullName,
+        firmName: user.firmName,
+        gstNumber: user.gstNumber,
+        salesRepNumber: user.salesRepNumber,
+        contactNumber: user.contactNumber,
+        verified: user.verified ? "Yes" : "No",
+        createdAt: new Date(user.createdAt).toLocaleString()
+    }));
 
     const navigate = useNavigate();
 
@@ -198,6 +219,14 @@ const AdminDashboard = () => {
                     <h2 className="text-3xl font-bold">Admin Dashboard</h2>
                     <div className="flex items-center gap-4">
                         <h1 className="text-2xl font-bold">Welcome, Admin!</h1>
+                        <CSVLink
+                            data={validSubmissions}
+                            headers={csvHeaders}
+                            filename="form-submissions.csv"
+                            className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm"
+                        >
+                            Export CSV
+                        </CSVLink>
                         <Button
                             onClick={handleLogout}
                             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"

@@ -4,6 +4,9 @@ import Admin from '../models/Admin.js';
 import User from '../models/User.js'
 import { createClient } from "@supabase/supabase-js";
 import dotenv from 'dotenv';
+import PDFDocument from "pdfkit";
+import archiver from "archiver";
+import stream from "stream";
 
 dotenv.config();
 
@@ -134,6 +137,47 @@ router.post('/logout', (req, res) =>{
         return res.status(200).json({message: "Logout Successful" })
     })
 }) 
+
+router.get("/admin/download-all-pdfs", isAdminAuthenticated, async (req, res) => {
+    try {
+        const users = await User.find(); // You can filter to only verified users if needed
+
+        res.setHeader("Content-Type", "application/zip");
+        res.setHeader("Content-Disposition", "attachment; filename=submissions.zip");
+
+        const archive = archiver("zip", { zlib: { level: 9 } });
+        archive.pipe(res);
+
+        for (const user of users) {
+            const doc = new PDFDocument();
+            const bufferStream = new stream.PassThrough();
+            const chunks = [];
+
+            doc.on("data", (chunk) => chunks.push(chunk));
+            doc.on("end", () => {
+                const pdfBuffer = Buffer.concat(chunks);
+                archive.append(pdfBuffer, { name: `${user.fullName || "user"}-${user._id}.pdf` });
+            });
+
+            doc.fontSize(16).text("User Submission", { underline: true });
+            doc.moveDown();
+            doc.text(`Name: ${user.fullName || "-"}`);
+            doc.text(`Firm Name: ${user.firmName || "-"}`);
+            doc.text(`GST Number: ${user.gstNumber || "-"}`);
+            doc.text(`Sales Rep Number: ${user.salesRepNumber || "-"}`);
+            doc.text(`Contact Number: ${user.contactNumber || "-"}`);
+            doc.text(`Verified: ${user.verified ? "Yes" : "No"}`);
+            doc.text(`Checklist: Cheque - ${user.checklist?.cheque ? "✓" : "✗"}, Letterhead - ${user.checklist?.letterhead ? "✓" : "✗"}`);
+            doc.text(`Submitted At: ${new Date(user.createdAt).toLocaleString()}`);
+            doc.end();
+        }
+
+        archive.finalize();
+    } catch (error) {
+        console.error("Error generating PDFs:", error);
+        res.status(500).json({ error: "Failed to generate PDFs." });
+    }
+});
 
 // MIDDLEWARE
 export function isAdminAuthenticated(req, res, next) {
