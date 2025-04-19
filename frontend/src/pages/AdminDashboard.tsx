@@ -40,6 +40,41 @@ const AdminDashboard = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [verifyUserId, setVerifyUserId] = useState<string | null>(null);
 
+    const handleGeneratePDF = async (userId: string) => {
+        try {
+            await api.post(`/api/admin/generate-pdf/${userId}`, {}, { withCredentials: true });
+            toast({
+                title: "PDF Generated",
+                description: "PDF has been generated using the template.",
+            });
+        } catch (error) {
+            console.error("PDF generation failed:", error);
+            toast({
+                title: "Error",
+                description: "Failed to generate PDF. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleDownloadPDF = (userId: string, gstNumber: string) => {
+        try {
+            const link = document.createElement("a");
+            link.href = `${import.meta.env.VITE_BACKEND_URL}/api/admin/download-pdf/${userId}`;
+            link.setAttribute("download", `${gstNumber}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Download failed. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
+
     const csvHeaders = [
         { label: "Full Name", key: "fullName" },
         { label: "Firm Name", key: "firmName" },
@@ -365,8 +400,29 @@ const AdminDashboard = () => {
                                             )}
                                         </Button>
                                     )}
-                                    <Button size="sm" variant="destructive" onClick={() => handleDelete(user._id)}>
+
+                                    <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        onClick={() => handleDelete(user._id)}
+                                    >
                                         Delete
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => handleGeneratePDF(user._id)}
+                                    >
+                                        Generate PDF
+                                    </Button>
+
+                                    <Button
+                                        size="sm"
+                                        variant="secondary"
+                                        onClick={() => handleDownloadPDF(user._id, user.gstNumber)}
+                                    >
+                                        Download PDF
                                     </Button>
                                 </div>
                             </div>

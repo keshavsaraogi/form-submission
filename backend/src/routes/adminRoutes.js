@@ -7,6 +7,9 @@ import dotenv from 'dotenv';
 import PDFDocument from "pdfkit";
 import archiver from "archiver";
 import stream from "stream";
+import fs from 'fs-extra';
+import path from 'path';
+import { PDFDocument } from 'pdf-lib';
 
 dotenv.config();
 
@@ -176,6 +179,61 @@ router.get("/admin/download-all-pdfs", isAdminAuthenticated, async (req, res) =>
     } catch (error) {
         console.error("Error generating PDFs:", error);
         res.status(500).json({ error: "Failed to generate PDFs." });
+    }
+});
+
+router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        const safeGst = user.gstNumber?.replace(/[^a-zA-Z0-9]/g, "_") || "no_gst";
+
+        const templatePath = path.join(__dirname, "../templates/template.pdf");
+        const pdfBytes = await fs.readFile(templatePath);
+        const pdfDoc = await PDFDocument.load(pdfBytes);
+
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+
+        firstPage.drawText(`Firm Name: ${user.firmName || "N/A"}`, {
+            x: 100,
+            y: 700,
+            size: 12,
+        });
+
+        firstPage.drawText(`GST Number: ${user.gstNumber || "N/A"}`, {
+            x: 100,
+            y: 680,
+            size: 12,
+        });
+
+        const modifiedPdf = await pdfDoc.save();
+
+        const outputPath = path.join(__dirname, `../generated/${safeGst}.pdf`);
+        await fs.outputFile(outputPath, modifiedPdf);
+
+        res.status(200).json({ success: true, message: "PDF generated" });
+    } catch (error) {
+        console.error("PDF generation error:", error);
+        res.status(500).json({ error: "Failed to generate PDF" });
+    }
+});
+
+router.get("/admin/download-pdf/:id", isAdminAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        const safeGst = user.gstNumber?.replace(/[^a-zA-Z0-9]/g, "_") || "no_gst";
+        const filePath = path.join(__dirname, `../generated/${safeGst}.pdf`);
+
+        if (!fs.existsSync(filePath)) return res.status(404).json({ error: "PDF not found" });
+
+        res.download(filePath, `${safeGst}.pdf`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Download failed" });
     }
 });
 
