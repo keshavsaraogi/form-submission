@@ -27,7 +27,7 @@ const supabase = createClient(
 
 router.post("/get-signed-url", async (req, res) => {
     try {
-        console.log("Session at get-signed-url:", req.session); // 🛠️ Debugging Session
+        console.log("Session at get-signed-url:", req.session);
 
         if (!req.session?.isAdmin) {
             return res.status(401).json({ error: "Unauthorized. Admins only." });
@@ -41,17 +41,17 @@ router.post("/get-signed-url", async (req, res) => {
 
         const { data, error } = await supabase.storage
             .from(process.env.SUPABASE_BUCKET)
-            .createSignedUrl(filePath, 900); // 900 seconds = 15 min
+            .createSignedUrl(filePath, 900);
 
         if (error || !data?.signedUrl) {
-            console.error("Supabase error:", error); // 🛠️ Debugging
+            console.error("Supabase error:", error);
             return res.status(500).json({ error: "Failed to generate signed URL." });
         }
 
         res.json({ signedUrl: data.signedUrl });
 
     } catch (error) {
-        console.error("General Error:", error); // 🛠️ Debugging
+        console.error("General Error:", error);
         res.status(500).json({ error: "Server Error" });
     }
 });
