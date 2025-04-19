@@ -420,7 +420,14 @@ const AdminDashboard = () => {
                                     <Button
                                         size="sm"
                                         variant="secondary"
-                                        onClick={() => handleDownloadPDF(user._id, user.gstNumber)}
+                                        onClick={() => {
+                                            const link = document.createElement("a");
+                                            link.href = `${import.meta.env.VITE_BACKEND_URL}/api/admin/download-pdf/${user._id}`;
+                                            link.setAttribute("download", `${user.gstNumber}.pdf`);
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            link.remove();
+                                        }}
                                     >
                                         Download PDF
                                     </Button>
