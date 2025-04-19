@@ -9,7 +9,7 @@ import archiver from "archiver";
 import stream from "stream";
 import fs from 'fs-extra';
 import path from 'path';
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument as PDFLibDocument } from 'pdf-lib';
 
 dotenv.config();
 
@@ -191,7 +191,7 @@ router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) =>
 
         const templatePath = path.join(__dirname, "../templates/template.pdf");
         const pdfBytes = await fs.readFile(templatePath);
-        const pdfDoc = await PDFDocument.load(pdfBytes);
+        const pdfDoc = await PDFLibDocument.load(pdfBytes);
 
         const pages = pdfDoc.getPages();
         const firstPage = pages[0];
