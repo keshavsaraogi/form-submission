@@ -187,37 +187,38 @@ router.get("/admin/download-all-pdfs", isAdminAuthenticated, async (req, res) =>
     }
 });
 
+
 router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ error: "User not found" });
 
         const safeGst = user.gstNumber?.replace(/[^a-zA-Z0-9]/g, "_") || "no_gst";
-
         const templatePath = path.join(__dirname, "../templates/template.pdf");
-        const pdfBytes = await fs.readFile(templatePath);
-        const pdfDoc = await PDFLibDocument.load(pdfBytes);
+
+        const templateBytes = await fs.readFile(templatePath);
+        const pdfDoc = await PDFLibDocument.load(templateBytes);
 
         const pages = pdfDoc.getPages();
         const firstPage = pages[0];
 
         firstPage.drawText(`Firm Name: ${user.firmName || "N/A"}`, {
-            x: 100,
-            y: 700,
+            x: 50,
+            y: 500,
             size: 12,
         });
 
         firstPage.drawText(`GST Number: ${user.gstNumber || "N/A"}`, {
-            x: 100,
-            y: 680,
+            x: 50,
+            y: 480,
             size: 12,
         });
 
-        const modifiedPdf = await pdfDoc.save();
-
+        const pdfBytes = await pdfDoc.save();
         const outputPath = path.join(__dirname, `../generated/${safeGst}.pdf`);
-        await fs.outputFile(outputPath, modifiedPdf);
+        await fs.outputFile(outputPath, pdfBytes);
 
+        console.log(`✅ PDF created at: ${outputPath}`);
         res.status(200).json({ success: true, message: "PDF generated" });
     } catch (error) {
         console.error("PDF generation error:", error);
