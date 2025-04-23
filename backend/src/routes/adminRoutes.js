@@ -243,6 +243,22 @@ router.get("/admin/download-pdf/:id", isAdminAuthenticated, async (req, res) => 
     }
 });
 
+router.patch("/admin/user/:id/notes", isAdminAuthenticated, async (req, res) => {
+    try {
+        const { notes } = req.body;
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { notes },
+            { new: true }
+        );
+        res.status(200).json({ success: true, notes: user.notes });
+    } catch (error) {
+        console.error("Error updating notes:", error);
+        res.status(500).json({ error: "Failed to update notes" });
+    }
+});
+
+
 // MIDDLEWARE
 export function isAdminAuthenticated(req, res, next) {
     if (req.session && req.session.isAdmin) {
