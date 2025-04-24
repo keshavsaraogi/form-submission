@@ -194,6 +194,19 @@ const AdminDashboard = () => {
         }
     }
 
+    const handleUpdateNotes = async (userId: string, notes: string) => {
+        try {
+            await api.patch(`/api/admin/user/${userId}/notes`, { notes }, { withCredentials: true });
+            toast({ title: "Notes updated successfully" });
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to update notes. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
     const handleChecklistUpdate = async (
         userId: string,
         field: "cheque" | "letterhead",
