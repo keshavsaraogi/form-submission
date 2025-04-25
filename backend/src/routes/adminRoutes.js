@@ -201,7 +201,10 @@ router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) =>
         page.drawText(`Sales Rep Number: ${user.salesRepNumber || "N/A"}`, { x: 50, y: 710 });
         page.drawText(`Contact Number: ${user.contactNumber || "N/A"}`, { x: 50, y: 690 });
         page.drawText(`Verified: ${user.verified ? "Yes" : "No"}`, { x: 50, y: 670 });
-        page.drawText(`Checklist - Cheque: ${user.checklist?.cheque ? "✓" : "✗"}, Letterhead: ${user.checklist?.letterhead ? "✓" : "✗"}`, { x: 50, y: 650 });
+        page.drawText(`Checklist - Cheque: ${user.checklist?.cheque ? "Yes" : "No"}, Letterhead: ${user.checklist?.letterhead ? "Yes" : "No"}`, {
+            x: 50,
+            y: 650,
+        });
 
         const pdfBytes = await pdfDoc.save();
 
@@ -210,7 +213,7 @@ router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) =>
 
         await fs.outputFile(outputPath, pdfBytes);
 
-        console.log(`✅ Generated PDF saved to ${outputPath}`);
+        console.log(`Generated PDF saved to ${outputPath}`);
         res.status(200).json({ success: true });
     } catch (error) {
         console.error("PDF generation failed:", error);
