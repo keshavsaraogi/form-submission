@@ -17,11 +17,23 @@ app.set('trust proxy', 1);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:3000',
+]
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, 
-    credentials: true
-}));
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.options('*', cors({
   origin: process.env.FRONTEND_URL,
@@ -47,7 +59,7 @@ app.use(
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+  .catch(err => console.error('MongoDB connection error:', err));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -55,7 +67,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', adminRoutes);
 
-app.get('/', (req, res) => res.send('🚀 API Running'));
+app.get('/', (req, res) => res.send('API Running'));
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
