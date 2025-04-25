@@ -4,7 +4,7 @@ import Admin from '../models/Admin.js';
 import User from '../models/User.js'
 import { createClient } from "@supabase/supabase-js";
 import dotenv from 'dotenv';
-import PDFDocument from "pdfkit";
+import PDFKitDocument from "pdfkit";
 import archiver from "archiver";
 import stream from "stream";
 import fs from 'fs-extra';
@@ -193,13 +193,18 @@ router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) =>
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ error: "User not found" });
 
-        const pdfDoc = await PDFDocument.create();
+        const pdfDoc = await PDFLibDocument.create();
         const page = pdfDoc.addPage([595, 842]);
 
-        page.drawText(`Firm Name: ${user.firmName}`, { x: 50, y: 750 });
-        page.drawText(`GST Number: ${user.gstNumber}`, { x: 50, y: 730 });
+        page.drawText(`Firm Name: ${user.firmName || "N/A"}`, { x: 50, y: 750 });
+        page.drawText(`GST Number: ${user.gstNumber || "N/A"}`, { x: 50, y: 730 });
+        page.drawText(`Sales Rep Number: ${user.salesRepNumber || "N/A"}`, { x: 50, y: 710 });
+        page.drawText(`Contact Number: ${user.contactNumber || "N/A"}`, { x: 50, y: 690 });
+        page.drawText(`Verified: ${user.verified ? "Yes" : "No"}`, { x: 50, y: 670 });
+        page.drawText(`Checklist - Cheque: ${user.checklist?.cheque ? "✓" : "✗"}, Letterhead: ${user.checklist?.letterhead ? "✓" : "✗"}`, { x: 50, y: 650 });
 
         const pdfBytes = await pdfDoc.save();
+
         const safeGst = user.gstNumber?.replace(/[^a-zA-Z0-9]/g, "_") || "no_gst";
         const outputPath = path.join(__dirname, `../generated/${safeGst}.pdf`);
 
@@ -211,7 +216,7 @@ router.post("/admin/generate-pdf/:id", isAdminAuthenticated, async (req, res) =>
         console.error("PDF generation failed:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
-});
+}); 
 
 router.get("/admin/download-pdf/:id", isAdminAuthenticated, async (req, res) => {
     try {
