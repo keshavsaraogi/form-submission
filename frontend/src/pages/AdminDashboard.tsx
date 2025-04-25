@@ -382,12 +382,22 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
 
-                                {/* Notes */}
-                                {user.notes && (
-                                    <div>
-                                        <strong>Notes:</strong> {user.notes}
-                                    </div>
-                                )}
+                                {/* Admin Notes */}
+                                <div>
+                                    <label htmlFor={`notes-${user._id}`} className="block text-sm font-medium mb-1">
+                                        Admin Notes:
+                                    </label>
+                                    <textarea
+                                        id={`notes-${user._id}`}
+                                        className="w-full p-2 border rounded-md text-sm"
+                                        rows={3}
+                                        defaultValue={user.notes}
+                                        onBlur={(e) => handleUpdateNotes(user._id, e.target.value)}
+                                        placeholder="Add notes here (e.g. follow-up needed)"
+                                    />
+                                </div>
+
+                                
 
                                 {/* Verified Status */}
                                 <div>
