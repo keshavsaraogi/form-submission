@@ -96,14 +96,31 @@ const UserFormWithDocs = () => {
     } catch (err: any) {
       let description = 'Submission failed. Please try again.';
 
-      if (err.response?.data?.error) {
-        if (err.response.data.error.includes('duplicate key error') || err.response.data.error.includes('GST already exists')) {
+      const backendError = err?.response?.data?.error;
+
+      if (typeof backendError === 'string') {
+        const msg = backendError.toLowerCase();
+        if (msg.includes('duplicate key') || msg.includes('gst') && msg.includes('exist')) {
           description = 'Duplicate GST Number found. Please use a unique GST.';
-        } else if (err.response.data.error.includes('file upload failed')) {
+        } else if (msg.includes('file upload failed') || msg.includes('upload failed')) {
           description = 'One or more file uploads failed. Please retry.';
         } else {
-          description = err.response.data.error;
+          description = backendError;
         }
+      } else if (backendError && typeof backendError === 'object') {
+        const msg: unknown = (backendError as any).message ?? (backendError as any).error;
+        if (typeof msg === 'string') {
+          const lower = msg.toLowerCase();
+          if (lower.includes('duplicate key') || lower.includes('gst') && lower.includes('exist')) {
+            description = 'Duplicate GST Number found. Please use a unique GST.';
+          } else if (lower.includes('file upload failed') || lower.includes('upload failed')) {
+            description = 'One or more file uploads failed. Please retry.';
+          } else {
+            description = msg;
+          }
+        }
+      } else if (err?.message) {
+        description = err.message;
       }
 
       toast({
